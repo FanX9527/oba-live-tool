@@ -18,6 +18,20 @@ export function isCommentListener(platform: IPlatform): platform is IPlatform & 
   return '_isCommentListener' in platform && platform._isCommentListener === true
 }
 
+export interface IVideoCommentCollector {
+  _isVideoCommentCollector: true
+  collectVideoComments(
+    options: VideoCommentCollectOptions,
+    onProgress?: (progress: VideoCommentCollectionProgress) => void,
+  ): Promise<VideoCommentCollectionResult>
+}
+
+export function isVideoCommentCollector(
+  platform: IPlatform,
+): platform is IPlatform & IVideoCommentCollector {
+  return '_isVideoCommentCollector' in platform && platform._isVideoCommentCollector === true
+}
+
 export interface IPerformPopup {
   _isPerformPopup: true
   /** 弹窗指定商品序号 */

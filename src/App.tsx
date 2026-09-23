@@ -22,6 +22,7 @@ import { useAutoMessageStore } from './hooks/useAutoMessage'
 import { useAutoPopUpStore } from './hooks/useAutoPopUp'
 import { useAutoReply, useAutoReplyStore } from './hooks/useAutoReply'
 import { useChromeConfigStore } from './hooks/useChromeConfig'
+import { useLeadStore } from './hooks/useLeadStore'
 import { useLiveControlStore } from './hooks/useLiveControl'
 import { useToast } from './hooks/useToast'
 import { useUpdateConfigStore, useUpdateStore } from './hooks/useUpdate'
@@ -38,6 +39,7 @@ function useGlobalIpcListener() {
   const { toast } = useToast()
 
   useIpcListener(IPC_CHANNELS.tasks.autoReply.showComment, ({ comment, accountId }) => {
+    useLeadStore.getState().ingestLiveMessage(accountId, comment)
     handleComment(comment, accountId)
   })
 

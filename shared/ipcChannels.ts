@@ -38,6 +38,10 @@ export const IPC_CHANNELS = {
       replyGenerated: 'tasks:autoReply:replyGenerated',
       sendReply: 'tasks:autoReply:sendReply',
     },
+    videoComments: {
+      collect: 'tasks:videoComments:collect',
+      progress: 'tasks:videoComments:progress',
+    },
     // 视频号上墙
     pinComment: 'tasks:pinComment',
     // 一键发红包
@@ -67,6 +71,26 @@ export const IPC_CHANNELS = {
   },
   account: {
     switch: 'account:switch',
+  },
+  device: {
+    list: 'device:list',
+    screenshot: 'device:screenshot',
+    tap: 'device:tap',
+    swipe: 'device:swipe',
+    key: 'device:key',
+    launchDouyin: 'device:launchDouyin',
+    dumpUi: 'device:dumpUi',
+    inputText: 'device:inputText',
+    accessibilityStatus: 'device:accessibilityStatus',
+    installAccessibility: 'device:installAccessibility',
+    openAccessibilitySettings: 'device:openAccessibilitySettings',
+    prepareOutreach: 'device:prepareOutreach',
+    confirmOutreach: 'device:confirmOutreach',
+  },
+  scrcpy: {
+    start: 'scrcpy:start',
+    stop: 'scrcpy:stop',
+    status: 'scrcpy:status',
   },
   log: 'log',
   app: {

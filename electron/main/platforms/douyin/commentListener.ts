@@ -14,11 +14,13 @@ export class ControlListener implements ICommentListener {
 
   startCommentListener(onComment: (comment: DouyinLiveMessage) => void) {
     this.handleComment = onComment
+    this.isRunning = true
     this.page.on('response', this.handleResponse)
     this.keepPageRunning()
   }
 
   stopCommentListener() {
+    this.isRunning = false
     this.page.off('response', this.handleResponse)
   }
 
@@ -31,6 +33,18 @@ export class ControlListener implements ICommentListener {
           msg_id: comment.comment_id,
           nick_name: comment.nick_name,
           content: comment.content,
+          user_id:
+            comment.user_id ??
+            comment.user_info?.user_id ??
+            comment.user_info?.uid ??
+            comment.user?.user_id ??
+            comment.user?.uid,
+          douyin_id:
+            comment.douyin_id ??
+            comment.user_info?.douyin_id ??
+            comment.user_info?.display_id ??
+            comment.display_id ??
+            comment.short_id,
           msg_type: 'comment',
           time: Date.now(),
         }

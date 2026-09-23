@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OBA 真机控制</string>
+    <string name="service_name">OBA 真机控制</string>
+    <string name="service_description">允许 OBA 中控台在本机执行点击、滑动、导航和文本填写。控制端口只监听手机回环地址，并通过已授权的 ADB 连接访问。</string>
+</resources>

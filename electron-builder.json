@@ -7,6 +7,21 @@
   },
   "electronLanguages": ["zh-CN", "en-US"],
   "files": ["dist-electron", "dist"],
+  "extraResources": [
+    {
+      "from": "resources/scrcpy/scrcpy-win64-v4.1",
+      "to": "scrcpy"
+    },
+    {
+      "from": "resources/android-accessibility/oba-accessibility.apk",
+      "to": "android-accessibility/oba-accessibility.apk"
+    },
+    {
+      "from": "resources/uiautomator2",
+      "to": "uiautomator2",
+      "filter": ["**/*"]
+    }
+  ],
   "mac": {
     "artifactName": "${productName}_${version}_macos_${arch}.${ext}",
     "target": [

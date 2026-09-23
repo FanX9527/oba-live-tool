@@ -1,9 +1,12 @@
+import { ContactRound, ListFilter, Send, SmartphoneIcon } from 'lucide-react'
 import { NavLink } from 'react-router'
-import { abilities, autoReplyPlatforms } from '@/abilities'
+import { autoReplyPlatforms } from '@/abilities'
 import { useCurrentAutoMessage } from '@/hooks/useAutoMessage'
 import { useCurrentAutoPopUp } from '@/hooks/useAutoPopUp'
 import { useAutoReply } from '@/hooks/useAutoReply'
+import { useLeadCount } from '@/hooks/useLeadStore'
 import { useCurrentLiveControl } from '@/hooks/useLiveControl'
+import { usePendingOutreachCount } from '@/hooks/useOutreachQueue'
 import { cn } from '@/lib/utils'
 import {
   CarbonBlockStorage,
@@ -28,10 +31,17 @@ export default function Sidebar() {
   const isAutoPopupRunning = useCurrentAutoPopUp(context => context.isRunning)
   const { isRunning: isAutoReplyRunning } = useAutoReply()
   const platform = useCurrentLiveControl(context => context.platform)
+  const leadCount = useLeadCount()
+  const pendingOutreachCount = usePendingOutreachCount()
 
   const tabs: SidebarTab[] = [
     {
       id: '/',
+      name: '真机控制',
+      icon: <SmartphoneIcon className="w-5 h-5" />,
+    },
+    {
+      id: '/browser-control',
       name: '打开中控台',
       icon: <CarbonContentDeliveryNetwork className="w-5 h-5" />,
     },
@@ -64,6 +74,21 @@ export default function Sidebar() {
       id: '/ai-chat',
       name: 'AI 助手',
       icon: <CarbonIbmWatsonTextToSpeech className="w-5 h-5" />,
+    },
+    {
+      id: '/lead-center',
+      name: '获客线索',
+      icon: <ContactRound className="w-5 h-5" />,
+    },
+    {
+      id: '/lead-screening',
+      name: 'AI 筛选',
+      icon: <ListFilter className="w-5 h-5" />,
+    },
+    {
+      id: '/outreach-queue',
+      name: '真机私信',
+      icon: <Send className="w-5 h-5" />,
     },
     {
       id: '/settings',
@@ -101,6 +126,14 @@ export default function Sidebar() {
               {tab.name}
               {tab.isRunning && (
                 <span className="absolute right-3 w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              )}
+              {tab.id === '/lead-center' && leadCount > 0 && (
+                <span className="ml-auto text-xs text-muted-foreground">{leadCount}</span>
+              )}
+              {tab.id === '/outreach-queue' && pendingOutreachCount > 0 && (
+                <span className="ml-auto text-xs text-muted-foreground">
+                  {pendingOutreachCount}
+                </span>
               )}
             </NavLink>
           ))}

@@ -64,6 +64,12 @@ export interface IpcChannels {
     accountId: string
   }) => void
 
+  [IPC_CHANNELS.tasks.videoComments.collect]: (
+    accountId: string,
+    options: VideoCommentCollectOptions,
+  ) => VideoCommentCollectionResult
+  [IPC_CHANNELS.tasks.videoComments.progress]: (progress: VideoCommentCollectionProgress) => void
+
   // AIChat
   [IPC_CHANNELS.tasks.aiChat.normalChat]: (params: {
     messages: AIChatMessage[]
@@ -130,6 +136,36 @@ export interface IpcChannels {
   [IPC_CHANNELS.app.providersUpdated]: (providers: Record<string, ProviderInfo>) => void
 
   [IPC_CHANNELS.account.switch]: (params: { account: Account }) => void
+
+  // Android devices
+  [IPC_CHANNELS.device.list]: () => AndroidDevice[]
+  [IPC_CHANNELS.device.screenshot]: (serial: string) => string
+  [IPC_CHANNELS.device.tap]: (serial: string, x: number, y: number) => void
+  [IPC_CHANNELS.device.swipe]: (
+    serial: string,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    durationMs: number,
+  ) => void
+  [IPC_CHANNELS.device.key]: (serial: string, key: AndroidDeviceKey) => void
+  [IPC_CHANNELS.device.launchDouyin]: (serial: string) => void
+  [IPC_CHANNELS.device.dumpUi]: (serial: string) => AndroidUiSnapshot
+  [IPC_CHANNELS.device.inputText]: (serial: string, text: string) => void
+  [IPC_CHANNELS.device.accessibilityStatus]: (serial: string) => AndroidAccessibilityStatus
+  [IPC_CHANNELS.device.installAccessibility]: (serial: string) => AndroidAccessibilityStatus
+  [IPC_CHANNELS.device.openAccessibilitySettings]: (serial: string) => void
+  [IPC_CHANNELS.device.prepareOutreach]: (
+    serial: string,
+    target: AndroidOutreachTarget,
+  ) => AndroidOutreachResult
+  [IPC_CHANNELS.device.confirmOutreach]: (serial: string, taskId: string) => AndroidOutreachResult
+
+  // scrcpy 投屏控制
+  [IPC_CHANNELS.scrcpy.start]: (serial: string) => { serial: string; pid?: number }
+  [IPC_CHANNELS.scrcpy.stop]: (serial: string) => boolean
+  [IPC_CHANNELS.scrcpy.status]: (serial: string) => boolean
 
   // Log
   [IPC_CHANNELS.log]: (message: LogMessage) => void

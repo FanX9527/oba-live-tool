@@ -16,6 +16,7 @@ import {
   isPerformPopup,
   isPinComment,
   isSendRedPacket,
+  isVideoCommentCollector,
 } from '#/platforms/IPlatform'
 import { createAutoCommentTask } from '#/tasks/AutoCommentTask'
 import { createAutoPopupTask } from '#/tasks/AutoPopupTask'
@@ -145,9 +146,33 @@ export class AccountSession {
 
   public async sendRedPacket(duration: string): Result.ResultAsync<void, Error> {
     if (!isSendRedPacket(this.platform)) {
-      return Result.fail(new TaskNotSupportedError({ taskName: '一键发红包', targetName: this.platform.platformName }))
+      return Result.fail(
+        new TaskNotSupportedError({
+          taskName: '一键发红包',
+          targetName: this.platform.platformName,
+        }),
+      )
     }
     return this.platform.sendRedPacket(duration)
+  }
+
+  public async collectVideoComments(
+    options: VideoCommentCollectOptions,
+    onProgress?: (progress: VideoCommentCollectionProgress) => void,
+  ): Promise<Result.Result<VideoCommentCollectionResult, Error>> {
+    if (!isVideoCommentCollector(this.platform)) {
+      return Result.fail(
+        new TaskNotSupportedError({
+          taskName: 'video-comments',
+          targetName: this.platform.platformName,
+        }),
+      )
+    }
+    try {
+      return Result.succeed(await this.platform.collectVideoComments(options, onProgress))
+    } catch (error) {
+      return Result.fail(error instanceof Error ? error : new Error(String(error)))
+    }
   }
 
   public updateTaskConfig<T extends LiveControlTask>(

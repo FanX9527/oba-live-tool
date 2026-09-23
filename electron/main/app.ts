@@ -11,6 +11,8 @@ import windowManager from './windowManager'
 import './ipc'
 import { createLogger } from './logger'
 import { accountManager } from './managers/AccountManager'
+import { androidAccessibilityManager } from './managers/AndroidAccessibilityManager'
+import { scrcpyManager } from './managers/ScrcpyManager'
 
 // const _require = createRequire(import.meta.url)
 
@@ -70,7 +72,10 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, 'public')
   : RENDERER_DIST
 
-app.commandLine.appendSwitch('remote-debugging-port', '9222')
+app.commandLine.appendSwitch(
+  'remote-debugging-port',
+  process.env.ELECTRON_CDP_PORT ?? (VITE_DEV_SERVER_URL ? '9223' : '9222'),
+)
 
 // Disable GPU Acceleration for Windows 7
 if (os.release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -142,6 +147,8 @@ app
 app.on('window-all-closed', async () => {
   win = null
   accountManager.cleanup()
+  scrcpyManager.stopAll()
+  await androidAccessibilityManager.stop()
   if (process.platform !== 'darwin') app.quit()
 })
 

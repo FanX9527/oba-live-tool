@@ -43,3 +43,12 @@ coverage/
 
 .trae
 .claude
+
+# Local Codex artifacts and device captures
+.codex-artifacts/
+
+# Android signing material and Python bytecode
+*.jks
+*.keystore
+__pycache__/
+*.pyc

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Pause, Play, RefreshCcw } from 'lucide-react'
 import { memo, useId, useMemo, useState } from 'react'
 import { IPC_CHANNELS } from 'shared/ipcChannels'

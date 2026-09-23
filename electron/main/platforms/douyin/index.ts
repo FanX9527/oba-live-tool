@@ -23,10 +23,12 @@ import type {
   IPerformPopup,
   IPlatform,
   ISendRedPacket,
+  IVideoCommentCollector,
 } from '../IPlatform'
 import { CompassListener, ControlListener } from './commentListener'
 import { REGEXPS, SELECTORS, TEXTS, URLS } from './constant'
 import { douyinElementFinder as elementFinder } from './element-finder'
+import { VideoCommentCollector } from './videoCommentCollector'
 
 const PLATFORM_NAME = '抖音小店' as const
 
@@ -34,12 +36,19 @@ const PLATFORM_NAME = '抖音小店' as const
  * 抖音小店
  */
 export class DouyinPlatform
-  implements IPlatform, IPerformPopup, IPerformComment, ICommentListener, ISendRedPacket
+  implements
+    IPlatform,
+    IPerformPopup,
+    IPerformComment,
+    ICommentListener,
+    ISendRedPacket,
+    IVideoCommentCollector
 {
   readonly _isPerformComment = true
   readonly _isPerformPopup = true
   readonly _isCommentListener = true
   readonly _isSendRedPacket = true
+  readonly _isVideoCommentCollector = true
 
   public mainPage: Page | null = null
   private commentListener: ICommentListener | null = null
@@ -53,12 +62,15 @@ export class DouyinPlatform
     })
     if (isConnected) {
       this.mainPage = page
+      // Refresh only after authentication. The live-control page can keep
+      // long-running requests open, so a refresh timeout must not tear down
+      // an otherwise valid connection.
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 15_000 }).catch(() => undefined)
     }
     // 2026.9
     // 抖店直接登录进入中控台的话会有两个一模一样的页面元素，
     // 导致无法定位到正常的元素，经测试手动刷新后就恢复正常
     // 这里直接模拟手动刷新页面
-    await page.reload({ waitUntil: 'load' })
     return isConnected
   }
 
@@ -108,6 +120,16 @@ export class DouyinPlatform
 
   getCommentPage() {
     return this.mainPage
+  }
+
+  async collectVideoComments(
+    options: VideoCommentCollectOptions,
+    onProgress?: (progress: VideoCommentCollectionProgress) => void,
+  ) {
+    const page = this.mainPage
+    if (!page) throw new Error('请先连接抖音中控台')
+    const collector = new VideoCommentCollector(page.context())
+    return collector.collect(options, onProgress)
   }
 
   startCommentListener(onComment: (comment: LiveMessage) => void, source: 'control' | 'compass') {
